@@ -64,9 +64,7 @@
       cursor: pointer;
     }
 
-    .env-wrap {
-      display: inline-block;
-    }
+    .env-wrap { display: inline-block; }
 
     .envelope-svg {
       width: 84px;
@@ -75,9 +73,7 @@
       transition: transform 0.3s;
     }
 
-    .env-wrap:hover .envelope-svg {
-      transform: scale(1.08);
-    }
+    .env-wrap:hover .envelope-svg { transform: scale(1.08); }
 
     .env-label {
       font-size: 11px;
@@ -87,7 +83,15 @@
       font-weight: 700;
       text-transform: uppercase;
     }
-<img src="kitap.JPG" alt="Gazi Mustafa Kemal Atatürk kitabı" style="display:block; width:160px; margin:0 auto 20px; border-radius:8px; box-shadow:0 4px 16px rgba(192,21,42,0.18);">
+
+    .book-cover {
+      display: block;
+      width: 150px;
+      margin: 0 auto 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(192,21,42,0.22);
+    }
+
     .letter-body {
       background: #fff;
       border-radius: 12px;
@@ -183,7 +187,6 @@
     }
 
     .btn:active { transform: scale(0.98); opacity: 0.9; }
-
     .btn-red { background: #C0152A; color: #FDF6E3; }
     .btn-gold { background: #D4A017; color: #2C1810; }
 
@@ -242,6 +245,8 @@
         <div class="env-label" id="envLabel">dokunmak için tıkla</div>
       </div>
     </div>
+
+    <img src="kitap.JPG" alt="Gazi Mustafa Kemal Atatürk kitabı" class="book-cover">
 
     <div class="letter-body" id="letterBlock">
       <p class="salut">Sevgili öğrencim,</p>
