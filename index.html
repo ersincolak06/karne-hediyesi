@@ -58,6 +58,7 @@
       margin: 0 auto;
     }
 
+    /* ZARF */
     .envelope-scene {
       text-align: center;
       margin: 16px 0 24px;
@@ -84,12 +85,37 @@
       text-transform: uppercase;
     }
 
+    /* Yanıp sönme animasyonu */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+
+    .env-label.pulsing {
+      animation: pulse 1.4s ease-in-out infinite;
+      color: #C0152A;
+    }
+
+    /* KİTAP GÖRSELI */
     .book-cover {
       display: block;
       width: 150px;
       margin: 0 auto 20px;
       border-radius: 8px;
       box-shadow: 0 4px 16px rgba(192,21,42,0.22);
+    }
+
+    /* MEKTUP - gizli başlar */
+    .letter-reveal {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.7s ease, opacity 0.6s ease;
+    }
+
+    .letter-reveal.open {
+      max-height: 1200px;
+      opacity: 1;
     }
 
     .letter-body {
@@ -99,7 +125,6 @@
       border-left: 4px solid #C0152A;
       margin-bottom: 20px;
       box-shadow: 0 2px 12px rgba(192,21,42,0.07);
-      transition: background 0.3s, border-left-color 0.3s;
     }
 
     .salut {
@@ -127,6 +152,25 @@
       color: #7a5200;
     }
 
+    /* VIDEO */
+    .video-wrap {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(192,21,42,0.18);
+      margin-bottom: 20px;
+      position: relative;
+      padding-top: 56.25%; /* 16:9 */
+    }
+
+    .video-wrap iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* MAIL BÖLÜMÜ */
     .cta-section { margin: 28px 0 0; }
 
     .card {
@@ -233,7 +277,8 @@
 
   <div class="content">
 
-    <div class="envelope-scene" id="envScene" onclick="toggleEnv()">
+    <!-- ZARF - tıklanınca mektup + video açılır -->
+    <div class="envelope-scene" id="envScene" onclick="openLetter()">
       <div class="env-wrap">
         <svg class="envelope-svg" id="envSvg" viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
           <rect x="2" y="14" width="76" height="44" rx="5" fill="#C0152A"/>
@@ -242,19 +287,36 @@
           <polygon points="78,58 54,36 78,14" fill="#a01020"/>
           <polygon points="2,58 78,58 54,36 40,48 26,36" fill="#b01225"/>
         </svg>
-        <div class="env-label" id="envLabel">dokunmak için tıkla</div>
+        <div class="env-label pulsing" id="envLabel">✉ buraya tıkla</div>
       </div>
     </div>
 
+    <!-- KİTAP GÖRSELI - her zaman görünür -->
     <img src="kitap.JPG" alt="Gazi Mustafa Kemal Atatürk kitabı" class="book-cover">
 
-    <div class="letter-body" id="letterBlock">
-      <p class="salut">Sevgili öğrencim,</p>
-      <p>Bu kitabı seni düşünerek seçtim. <span class="highlight">İlber Hoca</span>'nın anlattığı Atatürk yalnızca tarih kitaplarındaki Atatürk değil — merak eden, sorgulayan, öğrenen biri.</p>
-      <p>Kitabı bitirdiğinde en sevdiğin bir bölümü, bir cümleyi ya da aklında kalan bir soruyu aşağıdaki butona tıklayıp bana yazarsan çok mutlu olurum.</p>
-      <p style="font-size:13px; color:#7a5050; margin-top:16px;">— Ersin Öğretmen</p>
+    <!-- MEKTUP + VİDEO - zarfa tıklanınca açılır -->
+    <div class="letter-reveal" id="letterReveal">
+
+      <div class="letter-body">
+        <p class="salut">Sevgili öğrencim,</p>
+        <p>Bu kitabı seni düşünerek seçtim. <span class="highlight">İlber Hoca</span>'nın anlattığı Atatürk yalnızca tarih kitaplarındaki Atatürk değil — merak eden, sorgulayan, öğrenen biri.</p>
+        <p>Kitabı bitirdiğinde en sevdiğin bir bölümü, bir cümleyi ya da aklında kalan bir soruyu aşağıdaki butona tıklayıp bana yazarsan çok mutlu olurum.</p>
+        <p style="font-size:13px; color:#7a5050; margin-top:16px;">— Ersin Öğretmen</p>
+      </div>
+
+      <!-- VİDEO -->
+      <div class="video-wrap">
+        <iframe
+          src="https://www.youtube.com/embed/P34QevQUG-4?rel=0"
+          title="Ersin Öğretmen'den mesaj"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+
     </div>
 
+    <!-- MAİL BÖLÜMÜ - her zaman görünür -->
     <div class="cta-section">
 
       <div class="card">
@@ -297,23 +359,29 @@
   </div>
 
   <script>
-    let open = false;
-    function toggleEnv() {
-      open = !open;
+    let opened = false;
+
+    function openLetter() {
+      if (opened) return;
+      opened = true;
+
+      // Zarfı aç
       const flap = document.getElementById('flap');
+      flap.setAttribute('points', '2,14 40,10 78,14');
+
+      // Yazıyı güncelle, yanıp sönmeyi durdur
       const label = document.getElementById('envLabel');
-      const letter = document.getElementById('letterBlock');
-      if (open) {
-        flap.setAttribute('points', '2,14 40,10 78,14');
-        label.textContent = 'mesaj açıldı ✓';
-        letter.style.background = '#fff9ee';
-        letter.style.borderLeftColor = '#D4A017';
-      } else {
-        flap.setAttribute('points', '2,14 40,38 78,14');
-        label.textContent = 'dokunmak için tıkla';
-        letter.style.background = '#fff';
-        letter.style.borderLeftColor = '#C0152A';
-      }
+      label.classList.remove('pulsing');
+      label.textContent = '✓ açıldı';
+
+      // Mektup + videoyu göster
+      const reveal = document.getElementById('letterReveal');
+      reveal.classList.add('open');
+
+      // Mektuba kaydır
+      setTimeout(() => {
+        reveal.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 200);
     }
   </script>
 
